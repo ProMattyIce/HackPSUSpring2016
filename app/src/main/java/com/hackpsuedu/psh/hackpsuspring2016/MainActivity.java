@@ -1,21 +1,29 @@
 package com.hackpsuedu.psh.hackpsuspring2016;
 
+
+import android.app.LoaderManager;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.ExpandedMenuView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,13 +35,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, android.view.View.OnClickListener {
 
     TextView temputure;
     TextView Desciption;
     ImageView WeatherIcon;
+    ListView listView;
+
+    private SimpleCursorAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +58,18 @@ public class MainActivity extends AppCompatActivity {
         temputure = (TextView) findViewById(R.id.mainCurrentTemputure);
         Desciption = (TextView) findViewById(R.id.mainWeatherDesctiption);
         WeatherIcon = (ImageView) findViewById(R.id.mainWeatherIcon);
+
+        listView = (ListView) findViewById(R.id.Scores);
+
+        ArrayList<String> array = new ArrayList<String>();
+        array.add("Run");
+        array.add("Bike");
+        array.add("Swim");
+        array.add("Work-out");
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, array);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
 
     }
 
@@ -79,6 +104,50 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onClick(View view) {
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
+    }
+
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        AlertDialog.Builder counter = new AlertDialog.Builder(MainActivity.this);
+        counter.setMessage(R.string.where)
+                .setPositiveButton(R.string.in, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(getApplicationContext(), "Inside",
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNeutralButton(R.string.out, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(getApplicationContext(), "Outside",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+        counter.show();
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//        Intent intent = new Intent(MainActivity.this, AddActivity.class);
+//        intent.putExtra("rowid", id);
+//        startActivity(intent);
+//        return true;
+        return false;
+    }
+
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+      return null;
     }
 
 
@@ -135,9 +204,12 @@ public class MainActivity extends AppCompatActivity {
 
                 String weatherIconString = String.valueOf(weatherIcon);
                 if (weatherIconString.length() == 1)
-                    weatherIconString += "0" + weatherIconString;
+                    weatherIconString = "0" + weatherIconString;
 
-                String iconURL = String.format("https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/%s-s.png", weatherIconString);
+                String iconURL =
+                        String.format("https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/%s-s.png", weatherIconString);
+
+                Log.v("WEATHERAPI", iconURL);
 
                 HashMap<String, String> retVal = new HashMap<>();
                 retVal.put("currentTemp", String.valueOf(currentTemp));
