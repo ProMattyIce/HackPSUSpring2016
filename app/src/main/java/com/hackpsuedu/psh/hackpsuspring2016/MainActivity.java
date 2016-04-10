@@ -20,11 +20,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView results;
+    TextView temputure;
+    TextView Desciption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,17 +35,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-
-        results = (TextView) findViewById(R.id.textView);
+        temputure = (TextView) findViewById(R.id.mainCurrentTemputure);
+        Desciption = (TextView) findViewById(R.id.mainWeatherDesctiption);
 
         CurrentWeather currentWeater = new CurrentWeather();
         currentWeater.execute("17050");
@@ -134,7 +127,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(HashMap<String, String> setText) {
             super.onPostExecute(setText);
-            results.setText(setText.toString());
+
+            temputure.setText(MessageFormat.format("{0} {1}", setText.get("currentTemp"), setText.get("weatherUnits")));
+            Desciption.setText(setText.get("weatherDescription"));
+
         }
     }
 

@@ -12,16 +12,29 @@
     tools:context="com.hackpsuedu.psh.hackpsuspring2016.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Text"
-        android:id="@+id/textView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Current Temputure"
+            android:id="@+id/mainCurrentTemputure"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="WeatherDes"
+            android:id="@+id/mainWeatherDesctiption"
+            android:layout_marginTop="13dp"
+            android:layout_below="@+id/mainCurrentTemputure"
+            android:layout_centerHorizontal="true" />
+
+    </RelativeLayout>
 </RelativeLayout>
