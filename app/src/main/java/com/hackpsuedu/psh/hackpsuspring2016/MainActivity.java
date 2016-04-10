@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,10 +18,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     TextView temputure;
     TextView Desciption;
     ImageView WeatherIcon;
+    RelativeLayout mainLayout;
     ListView listView;
 
     private SimpleCursorAdapter mAdapter;
@@ -58,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         temputure = (TextView) findViewById(R.id.mainCurrentTemputure);
         Desciption = (TextView) findViewById(R.id.mainWeatherDesctiption);
         WeatherIcon = (ImageView) findViewById(R.id.mainWeatherIcon);
+        mainLayout = (RelativeLayout) findViewById(R.id.mainLayout);
 
         listView = (ListView) findViewById(R.id.mainListScores);
 
@@ -231,22 +238,69 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             super.onPostExecute(setText);
 
             if (setText != null) {
+                int weatherid = Integer.parseInt(setText.get("weatherIcon"));
                 temputure.setText(MessageFormat.format("{0} {1}", setText.get("currentTemp"), setText.get("weatherUnits")));
                 Desciption.setText(setText.get("weatherDescription"));
                 Picasso.with(getApplicationContext()).load(setText.get("weatherIconPic")).into(WeatherIcon);
 
+                // Set background based on weatherid
+                // Note: the text changes to white on darker backgrounds
+                // TODO change listview text to white too
+                if (weatherid <= 5) {
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.day_sunny));
+                } else if (weatherid > 5 && weatherid <= 12) {
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.day_cloudy));
+                } else if ((weatherid > 12 && weatherid <= 14) || weatherid == 18) {
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.day_rain));
+                } else if (weatherid > 14 && weatherid <= 17) {
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.stormy));
+                    Desciption.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                    temputure.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                } else if ((weatherid > 18 && weatherid <= 29)
+                        || weatherid == 43 || weatherid == 44) {
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.snowy));
+                } else if (weatherid > 29 && weatherid <= 32) {
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.day_sunny));
+                } else if (weatherid > 33 && weatherid <= 37) {
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.night_clear));
+                    Desciption.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                    temputure.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                } else if (weatherid == 38){
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.night_cloudy));
+                    Desciption.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                    temputure.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                } else if (weatherid > 38 && weatherid <= 42) {
+                    mainLayout.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.stormy));
+                    Desciption.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                    temputure.setTextColor(ContextCompat.getColor(MainActivity.this, android.R.color.white));
+                }
+
             } else {
                 temputure.setText(R.string.invalidZipCode);
                 Desciption.setText(R.string.invalidZipCode);
-
             }
-
         }
     }
 
     public void onSettingsClick(View view) {
-        Intent intent = new Intent(this, settings.class);
-        startActivity(intent);
+        ImageButton target = (ImageButton) this.findViewById(R.id.buttonSettings);
+
+        // Rotate settings button on click
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        target.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+                                           public void onAnimationStart(Animation animation) {
+                                           }
+
+                                           public void onAnimationRepeat(Animation animation) {
+                                           }
+
+                                           public void onAnimationEnd(Animation animation) {
+                                               Intent intent = new Intent(MainActivity.this, settings.class);
+                                               startActivity(intent);
+                                           }
+                                       }
+        );
     }
 
 }
