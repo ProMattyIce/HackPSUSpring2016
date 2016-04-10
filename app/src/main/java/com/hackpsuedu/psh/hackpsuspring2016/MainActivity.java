@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Desciption = (TextView) findViewById(R.id.mainWeatherDesctiption);
         WeatherIcon = (ImageView) findViewById(R.id.mainWeatherIcon);
 
-        listView = (ListView) findViewById(R.id.Scores);
+        listView = (ListView) findViewById(R.id.mainListScores);
 
         ArrayList<String> array = new ArrayList<String>();
         array.add("Run");
