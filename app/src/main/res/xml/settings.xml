@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Weather Settings">
+        <EditTextPreference
+            android:defaultValue="17050"
+            android:dialogTitle="Zip Code"
+            android:key="zipCodeKey"
+            android:summary="Current: 17050"
+            android:title="ZipCode" />
+
+        <ListPreference
+            android:defaultValue="Imperial"
+            android:entries="@array/units"
+            android:entryValues="@array/unitsEntryValues"
+            android:key="Units"
+            android:summary="Units: Fahrenheit"
+            android:title="Units" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

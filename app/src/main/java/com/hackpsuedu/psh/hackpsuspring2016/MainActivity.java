@@ -1,7 +1,10 @@
 package com.hackpsuedu.psh.hackpsuspring2016;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,8 +41,15 @@ public class MainActivity extends AppCompatActivity {
         temputure = (TextView) findViewById(R.id.mainCurrentTemputure);
         Desciption = (TextView) findViewById(R.id.mainWeatherDesctiption);
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         CurrentWeather currentWeater = new CurrentWeather();
         currentWeater.execute("17050");
+
     }
 
     @Override
@@ -58,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+
+            startActivity(new Intent(this, settings.class));
+            return false;
         }
 
         return super.onOptionsItemSelected(item);
@@ -70,8 +82,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected HashMap<String, String> doInBackground(String... params) {
             String api = "c3e7df4f2d6a40698cc75fac1b6a2c83";
-            String zipCode = "17050";
-            String units = "Imperial"; // Imperial Metric
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            String zipCode = prefs.getString("zipCodeKey", "17050");
+
+
+            String units = prefs.getString("Units", "Imperial");
+            //String units = "Imperial"; // Imperial Metric
 
             String request =
                     String.format("http://apidev.accuweather.com/locations/v1/postalcodes/search.json?q=%s&apikey=%s", zipCode, api);
@@ -128,8 +145,14 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(HashMap<String, String> setText) {
             super.onPostExecute(setText);
 
-            temputure.setText(MessageFormat.format("{0} {1}", setText.get("currentTemp"), setText.get("weatherUnits")));
-            Desciption.setText(setText.get("weatherDescription"));
+            if (setText != null) {
+                temputure.setText(MessageFormat.format("{0} {1}", setText.get("currentTemp"), setText.get("weatherUnits")));
+                Desciption.setText(setText.get("weatherDescription"));
+            } else {
+                temputure.setText(R.string.invalidZipCode);
+                Desciption.setText(R.string.invalidZipCode);
+
+            }
 
         }
     }
