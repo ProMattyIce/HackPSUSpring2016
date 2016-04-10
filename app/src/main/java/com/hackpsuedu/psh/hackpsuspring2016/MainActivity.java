@@ -244,4 +244,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
+    public void onSettingsClick(View view) {
+        Intent intent = new Intent(this, settings.class);
+        startActivity(intent);
+    }
+
 }
