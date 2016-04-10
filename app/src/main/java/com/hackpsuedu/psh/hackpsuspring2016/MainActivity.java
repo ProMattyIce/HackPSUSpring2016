@@ -14,7 +14,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView temputure;
     TextView Desciption;
+    ImageView WeatherIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         temputure = (TextView) findViewById(R.id.mainCurrentTemputure);
         Desciption = (TextView) findViewById(R.id.mainWeatherDesctiption);
+        WeatherIcon = (ImageView) findViewById(R.id.mainWeatherIcon);
 
     }
 
@@ -121,17 +126,25 @@ public class MainActivity extends AppCompatActivity {
 
                 arr = new JSONArray(weatherBuilder.toString());
                 JSONObject weatherJsonObject = arr.getJSONObject(0);
+                int weatherIcon = weatherJsonObject.getInt("WeatherIcon");
                 String weatherDescription = weatherJsonObject.getString("WeatherText");
                 JSONObject temp = weatherJsonObject.getJSONObject("Temperature");
                 temp = temp.getJSONObject(units);
                 int currentTemp = temp.getInt("Value");
                 String weatherUnits = temp.getString("Unit");
 
+                String weatherIconString = String.valueOf(weatherIcon);
+                if (weatherIconString.length() == 1)
+                    weatherIconString += "0" + weatherIconString;
+
+                String iconURL = String.format("https://apidev.accuweather.com/developers/Media/Default/WeatherIcons/%s-s.png", weatherIconString);
 
                 HashMap<String, String> retVal = new HashMap<>();
                 retVal.put("currentTemp", String.valueOf(currentTemp));
                 retVal.put("weatherUnits", weatherUnits);
                 retVal.put("weatherDescription", weatherDescription);
+                retVal.put("weatherIcon", weatherIconString);
+                retVal.put("weatherIconPic", iconURL);
 
                 return retVal;
             } catch (Exception e) {
@@ -148,6 +161,8 @@ public class MainActivity extends AppCompatActivity {
             if (setText != null) {
                 temputure.setText(MessageFormat.format("{0} {1}", setText.get("currentTemp"), setText.get("weatherUnits")));
                 Desciption.setText(setText.get("weatherDescription"));
+                Picasso.with(getApplicationContext()).load(setText.get("weatherIconPic")).into(WeatherIcon);
+
             } else {
                 temputure.setText(R.string.invalidZipCode);
                 Desciption.setText(R.string.invalidZipCode);

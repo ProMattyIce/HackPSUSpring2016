@@ -33,7 +33,7 @@
             android:text="Current Temputure"
             android:id="@+id/mainCurrentTemputure"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignStart="@+id/mainWeatherDesctiption" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -41,9 +41,16 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="WeatherDes"
             android:id="@+id/mainWeatherDesctiption"
-            android:layout_marginTop="13dp"
-            android:layout_below="@+id/mainCurrentTemputure"
+            android:layout_below="@+id/mainWeatherIcon"
             android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/mainWeatherIcon"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="24dp" />
 
     </RelativeLayout>
 </RelativeLayout>
