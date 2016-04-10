@@ -14,9 +14,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp">
+        android:layout_height="140dp"
+        android:id="@+id/weatherLayout">
 
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
 
+            android:background="@android:color/transparent"
+            android:src="@drawable/gear"
+            android:id="@+id/buttonSettings"
+            android:onClick="onSettingsClick" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

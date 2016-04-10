@@ -157,4 +157,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onSettingsClick(View view) {
+        Intent intent = new Intent(this, settings.class);
+        startActivity(intent);
+    }
+
 }
